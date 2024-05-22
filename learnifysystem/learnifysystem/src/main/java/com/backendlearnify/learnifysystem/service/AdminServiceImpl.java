@@ -1,10 +1,7 @@
 package com.backendlearnify.learnifysystem.service;
-
 import com.backendlearnify.learnifysystem.entity.Admin;
 import com.backendlearnify.learnifysystem.entity.Instructor;
 import com.backendlearnify.learnifysystem.repository.AdminRepository;
-import com.backendlearnify.learnifysystem.repository.Instructorrepository;
-import com.backendlearnify.learnifysystem.repository.Userrepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,4 +61,15 @@ public class AdminServiceImpl implements AdminService {
     public double getTotalRevenue() {
         return 0;
     }
+    @Override
+    public Admin login(String username, String password) {
+        // Implement login logic here
+        Admin admin = adminRepository.findByUsername(username);
+        if (admin != null && admin.getPassword().equals(password)) {
+            return admin;
+        } else {
+            return null;
+        }
+    }
+    
 }

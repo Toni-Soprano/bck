@@ -5,12 +5,14 @@ import com.backendlearnify.learnifysystem.entity.Instructor;
 
 import java.util.List;
 
+
+
 public interface AdminService {
     Admin saveAdmin(Admin admin);
 
     void deleteAdmin(Long adminId);
 
-    Admin findById(Long adminId);
+    Admin findById(Long id);
 
     Admin findByUsername(String username);
     List<Instructor> getAllInstructors();
@@ -18,4 +20,5 @@ public interface AdminService {
     int getTotalUsers();
     int getTotalInstructors();
     double getTotalRevenue();
+    Admin login(String username, String password);
 }

@@ -1,34 +1,40 @@
 package com.backendlearnify.learnifysystem.controller;
 
-import com.backendlearnify.learnifysystem.DTO.LoginRequest;
 import com.backendlearnify.learnifysystem.entity.User;
 import com.backendlearnify.learnifysystem.service.Userservice;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.http.ResponseEntity;
-
 @RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     @Autowired
     private Userservice userservice;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        userservice.save(user);
-        return ResponseEntity.ok("User registered successfully");
+        // Check if email exists
+        if (userservice.existsByEmail(user.getEmail())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+        }
+
+        // Check if username exists
+        if (userservice.existsByUsername(user.getUsername())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
+        }
+
+        // If email and username are unique, proceed with user registration
+        User newUser = userservice.saveUser(user);
+
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String username, @RequestParam String password) {
-        User user = userservice.findByUsernameAndPassword(username, password);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.status(401).body(null); // Unauthorized status
-        }
-    }
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userservice.findById(id);
@@ -38,13 +44,15 @@ public class AuthController {
             return ResponseEntity.notFound().build();
         }
     }
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) {
-        User user = userservice.findByUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+
+    @PostMapping("/GetSingleUser")
+    public ResponseEntity<User> getSingleUser(@RequestBody Map<String, Long> request) {
+        Long userId = request.get("userId");
+        User user = userservice.findById(userId);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
-            return ResponseEntity.status(401).body(null); // Unauthorized status
+            return ResponseEntity.notFound().build();
         }
     }
 }

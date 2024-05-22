@@ -30,7 +30,7 @@ public class RoleService implements IRoleService {
     @Override
     public void deleteRole(int id) {
 
-        roleRepository.deleteById(id);
+        roleRepository.deleteById((long) id);
     }
 
     @Override

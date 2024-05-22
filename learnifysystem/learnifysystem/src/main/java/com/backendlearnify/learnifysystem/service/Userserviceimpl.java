@@ -1,5 +1,4 @@
 package com.backendlearnify.learnifysystem.service;
-
 import com.backendlearnify.learnifysystem.entity.User;
 import com.backendlearnify.learnifysystem.repository.Userrepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ public class Userserviceimpl implements Userservice {
 
     @Autowired
     private Userrepository userrepository;
+
     @Override
     public void registerUser(User user) {
         // Implement registration logic, such as saving the user to the database
@@ -35,12 +35,28 @@ public class Userserviceimpl implements Userservice {
 
         return userrepository.findAll();
     }
+
     @Override
     public User findById(Long id) {
         return userrepository.findById(id).orElse(null);
     }
-    @Override
-    public User findByUsernameAndPassword(String username, String password) {
-        return userrepository.findByUsernameAndPassword(username, password);
+    public User getUserById(Long id){
+        return userrepository.findById(id).orElseThrow();
     }
+    public User updateUser (User user){
+        return userrepository.save(user);
+    }
+    public User loginUser(String email, String password) {
+        return userrepository.findByEmailAndPassword(email, password).orElse(null);
+    }
+    @Override
+    public boolean existsByEmail(String email) {
+        return userrepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userrepository.existsByUsername(username);
+    }
+   
 }

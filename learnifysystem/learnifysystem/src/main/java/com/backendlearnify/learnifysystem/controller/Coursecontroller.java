@@ -2,6 +2,9 @@ package com.backendlearnify.learnifysystem.controller;
 
 import com.backendlearnify.learnifysystem.entity.Course;
 import com.backendlearnify.learnifysystem.service.Courseservice;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,13 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/courses")
+@CrossOrigin(origins = "http://localhost:3000")
 public class Coursecontroller {
-    @Autowired
     private final Courseservice courseService;
 
+
+    
     @Autowired
     public Coursecontroller(Courseservice courseService) {
-
         this.courseService = courseService;
     }
 
@@ -24,6 +28,12 @@ public class Coursecontroller {
         courseService.saveCourse(course);
         return new ResponseEntity<>("Course saved successfully", HttpStatus.CREATED);
     }
+    @GetMapping
+   public ResponseEntity<List<Course>> getAllCourses() {
+    List<Course> courses = courseService.getAllCourses();
+    return new ResponseEntity<>(courses, HttpStatus.OK);
+}
+
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         Course course = courseService.getCourseById(id);
@@ -33,18 +43,16 @@ public class Coursecontroller {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping("/update")
     public ResponseEntity<String> updateCourse(@RequestBody Course course) {
         courseService.updateCourse(course);
         return new ResponseEntity<>("Course updated successfully", HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteCourseById(@PathVariable Long id) {
         courseService.deleteCourseById(id);
         return new ResponseEntity<>("Course deleted successfully", HttpStatus.OK);
     }
-
-
-
-
 }

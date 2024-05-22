@@ -1,9 +1,7 @@
 package com.backendlearnify.learnifysystem.entity;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -12,52 +10,67 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String price;
-
     private String slug;
-
     private String aboutCourse;
-
-    // Course Setting
     private int maximumStudents;
-
     private String difficultyLevel;
-
     private boolean isPublicCourse;
-
     private boolean enableQA;
-
-    // Choose Categories
     private String categories;
+
+    @Lob
     private byte[] courseThumbnail;
-    // Course Intro Video
-    private String introVideoPath; // Store local video path or video URL
+
+    private String introVideoPath;
+
+    @Temporal(TemporalType.DATE)
     private Date startDate;
 
     private String language;
-
     private String requirements;
-
     private String description;
-
     private int totalCourseDurationHours;
-
     private int totalCourseDurationMinutes;
-
     private String courseTags;
-
     private String targetedAudience;
-    // Certificate Template
+  // Existing attribute for storing course thumbnail
+
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Lob
     @Column(name = "certificate_template")
     private byte[] certificateTemplate;
-    // Approval Status
+
     private boolean approved;
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<CartItem> cartItems = new ArrayList<>();
+
     public Course() {
+    }
+
+    // Getters and Setters for all attributes
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -112,8 +125,8 @@ public class Course {
         return isPublicCourse;
     }
 
-    public void setPublicCourse(boolean publicCourse) {
-        isPublicCourse = publicCourse;
+    public void setPublicCourse(boolean isPublicCourse) {
+        this.isPublicCourse = isPublicCourse;
     }
 
     public boolean isEnableQA() {
@@ -228,22 +241,19 @@ public class Course {
         this.approved = approved;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public List<Review> getReviews() {
+        return reviews;
     }
 
-    public Long getId() {
-        return id;
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
-    @OneToMany(mappedBy = "course")
-    private Collection<CartItem> cartItem;
-
-    public Collection<CartItem> getCartItem() {
-        return cartItem;
+    public List<CartItem> getCartItems() {
+        return cartItems;
     }
 
-    public void setCartItem(Collection<CartItem> cartItem) {
-        this.cartItem = cartItem;
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
 }
